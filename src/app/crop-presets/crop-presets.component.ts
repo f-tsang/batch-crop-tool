@@ -5,7 +5,7 @@ import { filter, map, mergeAll, take, toArray } from 'rxjs/operators'
 @Component({
   selector: 'app-crop-presets',
   template: `
-    <header>Presets</header>
+    <header>1 - Presets</header>
     <div class="preset-list">
       <div
         class="preset-option"
@@ -20,6 +20,7 @@ import { filter, map, mergeAll, take, toArray } from 'rxjs/operators'
         <button
           [style.color]="preset['default'] ? 'green' : 'initial'"
           (click)="setDefaults(i)"
+          aria-label="Set as default"
           mat-icon-button
         >
           <mat-icon>check_circle_outline</mat-icon>
@@ -33,39 +34,12 @@ import { filter, map, mergeAll, take, toArray } from 'rxjs/operators'
           />
         </mat-form-field>
         <div class="preset-numbers">
-          <mat-form-field>
-            <mat-label>Width</mat-label>
+          <mat-form-field *ngFor="let cropDim of cropDimensions">
+            <mat-label>{{ cropDim | titlecase }}</mat-label>
             <input
               type="number"
-              [value]="preset['width'] || ''"
-              (change)="updatePreset('width', $event.target.value, i)"
-              matInput
-            />
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>Height</mat-label>
-            <input
-              type="number"
-              [value]="preset['height'] || ''"
-              (change)="updatePreset('height', $event.target.value, i)"
-              matInput
-            />
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>X-offset</mat-label>
-            <input
-              type="number"
-              [value]="preset['x'] || ''"
-              (change)="updatePreset('x', $event.target.value, i)"
-              matInput
-            />
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>Y-offset</mat-label>
-            <input
-              type="number"
-              [value]="preset['y'] || ''"
-              (change)="updatePreset('y', $event.target.value, i)"
+              [value]="preset[cropDim] || ''"
+              (change)="updatePreset(cropDim, $event.target.value, i)"
               matInput
             />
           </mat-form-field>
@@ -77,14 +51,14 @@ import { filter, map, mergeAll, take, toArray } from 'rxjs/operators'
               (click)="movePreset(i, i - 1)"
               mat-icon-button
             >
-              <mat-icon>arrow_upward</mat-icon>
+              <mat-icon>arrow_drop_up</mat-icon>
             </button>
             <button
               [disabled]="last"
               (click)="movePreset(i, i + 1)"
               mat-icon-button
             >
-              <mat-icon>arrow_downward</mat-icon>
+              <mat-icon>arrow_drop_down</mat-icon>
             </button>
           </div>
           <button
@@ -106,8 +80,6 @@ import { filter, map, mergeAll, take, toArray } from 'rxjs/operators'
   styles: [
     `
       :host {
-        margin: 0 auto;
-        padding: 1rem;
         display: grid;
         grid-auto-columns: auto;
         max-width: 40rem;
@@ -142,6 +114,7 @@ import { filter, map, mergeAll, take, toArray } from 'rxjs/operators'
   ]
 })
 export class CropPresetsComponent implements OnInit {
+  cropDimensions = ['width', 'height', 'x-offset', 'y-offset']
   generateId = generateId()
   presets = new BehaviorSubject<{}[]>([
     { id: this.generateId.next().value, default: true }
@@ -194,18 +167,16 @@ export class CropPresetsComponent implements OnInit {
       .subscribe(presets => this.presets.next(presets))
   }
   movePreset(oldIndex: number, newIndex: number) {
+    const moveToIndex = map((presets: {}[]) => {
+      const newPresets = presets.filter((_, index) => index !== oldIndex)
+      return [
+        ...newPresets.slice(0, newIndex),
+        presets[oldIndex],
+        ...newPresets.slice(newIndex, newPresets.length)
+      ]
+    })
     this.presets
-      .pipe(
-        take(1),
-        map(presets => {
-          const newPresets = presets.filter((_, index) => index !== oldIndex)
-          return [
-            ...newPresets.slice(0, newIndex),
-            presets[oldIndex],
-            ...newPresets.slice(newIndex, newPresets.length)
-          ]
-        })
-      )
+      .pipe(take(1), moveToIndex)
       .subscribe(presets => this.presets.next(presets))
   }
 }

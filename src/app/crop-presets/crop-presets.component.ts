@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core'
-import { BehaviorSubject, pipe } from 'rxjs'
-import { filter, map, mergeAll, take, toArray } from 'rxjs/operators'
+import { Component } from '@angular/core'
+
+import { ImagePresetService } from '../core/image-preset.service'
 
 @Component({
   selector: 'app-crop-presets',
@@ -10,7 +10,7 @@ import { filter, map, mergeAll, take, toArray } from 'rxjs/operators'
       <div
         class="preset-option"
         *ngFor="
-          let preset of presets | async;
+          let preset of imagePreset.presets$ | async;
           let i = index;
           let first = first;
           let last = last;
@@ -19,7 +19,7 @@ import { filter, map, mergeAll, take, toArray } from 'rxjs/operators'
       >
         <button
           [style.color]="preset['default'] ? 'green' : 'initial'"
-          (click)="setDefaults(i)"
+          (click)="imagePreset.setAsDefault(i)"
           aria-label="Set as default"
           mat-icon-button
         >
@@ -30,7 +30,7 @@ import { filter, map, mergeAll, take, toArray } from 'rxjs/operators'
           <input
             matInput
             [value]="preset['name'] || ''"
-            (change)="updatePreset('name', $event.target.value, i)"
+            (change)="imagePreset.updatePreset('name', $event.target.value, i)"
           />
         </mat-form-field>
         <div class="preset-numbers">
@@ -39,7 +39,9 @@ import { filter, map, mergeAll, take, toArray } from 'rxjs/operators'
             <input
               type="number"
               [value]="preset[cropDim] || ''"
-              (change)="updatePreset(cropDim, $event.target.value, i)"
+              (change)="
+                imagePreset.updatePreset(cropDim, $event.target.value, i)
+              "
               matInput
             />
           </mat-form-field>
@@ -48,14 +50,14 @@ import { filter, map, mergeAll, take, toArray } from 'rxjs/operators'
           <div [style.display]="'flex'">
             <button
               [disabled]="first"
-              (click)="movePreset(i, i - 1)"
+              (click)="imagePreset.movePreset(i, i - 1)"
               mat-icon-button
             >
               <mat-icon>arrow_drop_up</mat-icon>
             </button>
             <button
               [disabled]="last"
-              (click)="movePreset(i, i + 1)"
+              (click)="imagePreset.movePreset(i, i + 1)"
               mat-icon-button
             >
               <mat-icon>arrow_drop_down</mat-icon>
@@ -64,7 +66,7 @@ import { filter, map, mergeAll, take, toArray } from 'rxjs/operators'
           <button
             class="close-button"
             [disabled]="(first && last) || preset['default']"
-            (click)="removePreset(i)"
+            (click)="imagePreset.removePreset(i)"
             mat-icon-button
           >
             <mat-icon>close</mat-icon>
@@ -72,10 +74,14 @@ import { filter, map, mergeAll, take, toArray } from 'rxjs/operators'
         </div>
       </div>
     </div>
-    <button class="preset-button" (click)="addPreset()" mat-stroked-button>
+    <button
+      class="preset-button"
+      (click)="imagePreset.addPreset()"
+      mat-stroked-button
+    >
       Add preset
     </button>
-    <p>{{ presets | async | json }}</p>
+    <p>{{ imagePreset.presets$ | async | json }}</p>
   `,
   styles: [
     `
@@ -113,76 +119,11 @@ import { filter, map, mergeAll, take, toArray } from 'rxjs/operators'
     `
   ]
 })
-export class CropPresetsComponent implements OnInit {
+export class CropPresetsComponent {
   cropDimensions = ['width', 'height', 'x-offset', 'y-offset']
-  generateId = generateId()
-  presets = new BehaviorSubject<{}[]>([
-    { id: this.generateId.next().value, default: true }
-  ])
 
-  constructor() {}
-  ngOnInit(): void {}
+  constructor(public imagePreset: ImagePresetService) {}
   trackById(_: number, { id }: any) {
     return id
-  }
-
-  setDefaults(index: number) {
-    const onlyOneDefault = pipe(
-      mergeAll(),
-      map((preset: {}, i) =>
-        index === i
-          ? { ...preset, default: true }
-          : { ...preset, default: false }
-      ),
-      toArray()
-    )
-    this.presets
-      .pipe(take(1), onlyOneDefault)
-      .subscribe(presets => this.presets.next(presets))
-  }
-  addPreset() {
-    const id = this.generateId.next().value
-    this.presets
-      .pipe(take(1))
-      .subscribe(presets => this.presets.next([...presets, { id }]))
-  }
-  updatePreset(key: string, value: any, index: number) {
-    const updatePresetAtIndex = map((presets: {}[]) => {
-      const newPresets = [...presets]
-      newPresets[index] = { ...presets[index], [key]: value }
-      return newPresets
-    })
-    this.presets
-      .pipe(take(1), updatePresetAtIndex)
-      .subscribe(presets => this.presets.next(presets))
-  }
-  removePreset(index: number) {
-    this.presets
-      .pipe(
-        take(1),
-        mergeAll(),
-        filter((_, i) => index !== i),
-        toArray()
-      )
-      .subscribe(presets => this.presets.next(presets))
-  }
-  movePreset(oldIndex: number, newIndex: number) {
-    const moveToIndex = map((presets: {}[]) => {
-      const newPresets = presets.filter((_, index) => index !== oldIndex)
-      return [
-        ...newPresets.slice(0, newIndex),
-        presets[oldIndex],
-        ...newPresets.slice(newIndex, newPresets.length)
-      ]
-    })
-    this.presets
-      .pipe(take(1), moveToIndex)
-      .subscribe(presets => this.presets.next(presets))
-  }
-}
-
-function* generateId(i = 0) {
-  for (;;) {
-    yield i++
   }
 }

@@ -6,6 +6,7 @@ import { Component } from '@angular/core'
     <app-crop-presets></app-crop-presets>
     <app-image-selector></app-image-selector>
     <app-image-processor></app-image-processor>
+    <app-overlay></app-overlay>
   `,
   styles: [
     `

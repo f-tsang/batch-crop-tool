@@ -13,7 +13,15 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core'
-import { combineLatest, from, Observable, Subscription, throwError } from 'rxjs'
+import {
+  combineLatest,
+  from,
+  Observable,
+  ReplaySubject,
+  Subscription,
+  throwError,
+  zip
+} from 'rxjs'
 import {
   catchError,
   count,
@@ -24,7 +32,8 @@ import {
   mergeAll,
   mergeMap,
   switchMap,
-  take
+  take,
+  toArray
 } from 'rxjs/operators'
 import {
   CropPreset,
@@ -96,17 +105,20 @@ export class ResizableDirective {
             <mat-icon>close</mat-icon>
           </button>
         </div>
-        <div class="controls">
+        <div class="controls" *ngIf="selectedPresets | async; let selected">
           <!-- Preview image button -->
           <button
-            (click)="showPreviewImage(image, selectedPresets[i])"
+            (click)="showPreviewImage(image, selected[i])"
             mat-icon-button
           >
             <mat-icon>image</mat-icon>
           </button>
           <!-- Select crop preset field -->
           <mat-form-field [style.width]="'100%'" appFix>
-            <mat-select [(value)]="selectedPresets[i]">
+            <mat-select
+              [value]="selected[i]"
+              (valueChange)="updateSelectedPresets($event, i)"
+            >
               <mat-option
                 *ngFor="let preset of imagePreset.presets | async"
                 [value]="preset.id"
@@ -119,7 +131,7 @@ export class ResizableDirective {
       </div>
     </div>
 
-    <p>{{ selectedPresets | json }}</p>
+    <p>{{ selectedPresets | async | json }}</p>
 
     <ng-template #preview let-imageSource="image" let-resizeImage="resize">
       <img [src]="imageSource" [appResizable]="resizeImage" />
@@ -152,9 +164,11 @@ export class ImageSelectorViewerComponent
   previewError: TemplateRef<ElementRef>
 
   imageWidth: string
-  selectedPresets: number[] = []
+  selectedPresets = new ReplaySubject<number[]>(1)
+  croppedImages = new ReplaySubject<string[]>(1)
 
   private defaultPresetSub: Subscription
+  private croppedImagesSub: Subscription
 
   constructor(
     public imagePreset: ImagePresetService,
@@ -164,6 +178,7 @@ export class ImageSelectorViewerComponent
   ) {}
   ngOnInit() {
     this.initializeSelectedPresets()
+    this.initializeCroppedImages()
   }
   ngAfterViewInit() {
     if (this.el?.nativeElement?.clientWidth) {
@@ -172,11 +187,24 @@ export class ImageSelectorViewerComponent
   }
   ngOnDestroy() {
     this?.defaultPresetSub.unsubscribe()
+    this?.croppedImagesSub.unsubscribe()
   }
   trackByItem<T>(_: number, item: T) {
     return item
   }
 
+  updateSelectedPresets(value: number, index: number) {
+    this.selectedPresets
+      .pipe(
+        take(1),
+        map(presets => {
+          const newPresets = [...presets]
+          newPresets[index] = value
+          return newPresets
+        })
+      )
+      .subscribe(presets => this.selectedPresets.next(presets))
+  }
   showPreviewImage(imageSource: string, cropPresetId: number) {
     const generatePreview = mergeMap((preset: CropPreset) =>
       this.cropImage(imageSource, preset)
@@ -225,6 +253,24 @@ export class ImageSelectorViewerComponent
           )
         )
       )
-      .subscribe(defaultPresets => (this.selectedPresets = defaultPresets))
+      .subscribe(defaultPresets => this.selectedPresets.next(defaultPresets))
+  }
+  private initializeCroppedImages() {
+    const cropImageUsingPreset = mergeMap(([image, presetId]) =>
+      this.findPreset(presetId).pipe(
+        mergeMap(preset => this.cropImage(image, preset))
+      )
+    )
+    this.croppedImagesSub = combineLatest([this.images, this.selectedPresets])
+      .pipe(
+        filter(([images, presetIds]) => images.length === presetIds.length),
+        mergeMap(([images, presetIds]) =>
+          zip(from(images), from(presetIds)).pipe(
+            cropImageUsingPreset,
+            toArray()
+          )
+        )
+      )
+      .subscribe(images => this.croppedImages.next(images))
   }
 }

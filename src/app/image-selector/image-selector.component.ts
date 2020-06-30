@@ -1,6 +1,4 @@
 import { Component, ViewChild } from '@angular/core'
-import { of, zip } from 'rxjs'
-import { mergeAll, mergeMap, take, toArray } from 'rxjs/operators'
 
 import {
   ImageSelectorViewerComponent
@@ -26,19 +24,10 @@ import {
   ]
 })
 export class ImageSelectorComponent {
-  @ViewChild(ImageSelectorViewerComponent)
-  viewer: ImageSelectorViewerComponent
+  @ViewChild(ImageSelectorViewerComponent, { static: true })
+  private viewer: ImageSelectorViewerComponent
 
-  generateCroppedImages() {
-    const images$ = this.viewer.images.pipe(take(1), mergeAll())
-    const presetIds$ = of(this.viewer.selectedPresets).pipe(mergeAll())
-    return zip(images$, presetIds$).pipe(
-      mergeMap(([image, presetId]) =>
-        this.viewer
-          .findPreset(presetId)
-          .pipe(mergeMap(preset => this.viewer.cropImage(image, preset)))
-      ),
-      toArray()
-    )
+  get croppedImages() {
+    return this.viewer.croppedImages
   }
 }

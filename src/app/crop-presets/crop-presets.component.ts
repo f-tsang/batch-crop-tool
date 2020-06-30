@@ -2,6 +2,8 @@ import { Component } from '@angular/core'
 
 import { ImagePresetService } from '../core/image-preset.service'
 
+export const cropDimensions = ['width', 'height', 'x-offset', 'y-offset']
+
 @Component({
   selector: 'app-crop-presets',
   template: `
@@ -10,7 +12,7 @@ import { ImagePresetService } from '../core/image-preset.service'
       <div
         class="preset-option"
         *ngFor="
-          let preset of imagePreset.presets$ | async;
+          let preset of imagePreset.presets | async;
           let i = index;
           let first = first;
           let last = last;
@@ -23,7 +25,15 @@ import { ImagePresetService } from '../core/image-preset.service'
           aria-label="Set as default"
           mat-icon-button
         >
-          <mat-icon>check_circle_outline</mat-icon>
+          <ng-container
+            *ngIf="preset['default']; then defaultPreset; else altPreset"
+          ></ng-container>
+          <ng-template #defaultPreset>
+            <mat-icon>radio_button_checked</mat-icon>
+          </ng-template>
+          <ng-template #altPreset>
+            <mat-icon>radio_button_unchecked</mat-icon>
+          </ng-template>
         </button>
         <mat-form-field>
           <mat-label>Name</mat-label>
@@ -81,7 +91,7 @@ import { ImagePresetService } from '../core/image-preset.service'
     >
       Add preset
     </button>
-    <p>{{ imagePreset.presets$ | async | json }}</p>
+    <p>{{ imagePreset.presets | async | json }}</p>
   `,
   styles: [
     `
@@ -120,7 +130,7 @@ import { ImagePresetService } from '../core/image-preset.service'
   ]
 })
 export class CropPresetsComponent {
-  cropDimensions = ['width', 'height', 'x-offset', 'y-offset']
+  cropDimensions = cropDimensions
 
   constructor(public imagePreset: ImagePresetService) {}
   trackById(_: number, { id }: any) {

@@ -9,7 +9,8 @@ import {
 } from './image-selector-picker/image-selector-picker.component'
 import {
   FixDirective,
-  ImageSelectorViewerComponent
+  ImageSelectorViewerComponent,
+  ResizableDirective
 } from './image-selector-viewer/image-selector-viewer.component'
 import { ImageSelectorComponent } from './image-selector.component'
 
@@ -18,7 +19,8 @@ import { ImageSelectorComponent } from './image-selector.component'
     ImageSelectorComponent,
     ImageSelectorViewerComponent,
     ImageSelectorPickerComponent,
-    FixDirective
+    FixDirective,
+    ResizableDirective
   ],
   exports: [
     ImageSelectorComponent,

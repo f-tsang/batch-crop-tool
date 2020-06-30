@@ -4,10 +4,14 @@ import {
   Directive,
   ElementRef,
   EventEmitter,
+  HostBinding,
+  HostListener,
   Input,
   OnDestroy,
   OnInit,
-  Output
+  Output,
+  TemplateRef,
+  ViewChild
 } from '@angular/core'
 import { combineLatest, from, Observable, Subscription } from 'rxjs'
 import {
@@ -16,9 +20,16 @@ import {
   filter,
   map,
   mergeAll,
-  switchMap
+  mergeMap,
+  switchMap,
+  take
 } from 'rxjs/operators'
-import { ImagePresetService } from 'src/app/core/image-preset.service'
+import {
+  CropPreset,
+  ImagePresetService
+} from 'src/app/core/image-preset.service'
+import { ImageService } from 'src/app/core/image.service'
+import { OverlayService } from 'src/app/core/overlay.service'
 
 /**
  * TODO
@@ -35,6 +46,30 @@ export class FixDirective implements AfterViewInit {
     if (infix) {
       infix.style.width = 'auto'
     }
+  }
+}
+
+/** TBD */
+@Directive({
+  selector: '[appResizable]'
+})
+export class ResizableDirective {
+  resize = false
+
+  @HostListener('click') clickToResize() {
+    this.resize = !this.resize
+  }
+  @HostBinding('style.max-width')
+  get maxWidth() {
+    return this.resize ? 'calc(100vw - (100vw - 100%))' : 'none'
+  }
+  @HostBinding('style.max-height')
+  get maxHeight() {
+    return this.resize ? 'calc(100vh - (100vh - 100%))' : 'none'
+  }
+  @Input()
+  set appResizable(resize: boolean) {
+    this.resize = resize
   }
 }
 
@@ -61,7 +96,7 @@ export class FixDirective implements AfterViewInit {
         <div class="controls">
           <!-- Preview image button -->
           <button
-            (click)="previewImage(image, selectedPresets[i])"
+            (click)="showPreviewImage(image, selectedPresets[i])"
             mat-icon-button
           >
             <mat-icon>image</mat-icon>
@@ -70,7 +105,7 @@ export class FixDirective implements AfterViewInit {
           <mat-form-field [style.width]="'100%'" appFix>
             <mat-select [(value)]="selectedPresets[i]">
               <mat-option
-                *ngFor="let preset of imagePreset.presets$ | async"
+                *ngFor="let preset of imagePreset.presets | async"
                 [value]="preset.id"
               >
                 {{ preset.name }}
@@ -80,7 +115,21 @@ export class FixDirective implements AfterViewInit {
         </div>
       </div>
     </div>
+
     <p>{{ selectedPresets | json }}</p>
+
+    <ng-template #preview let-imageSource="image" let-resizeImage="resize">
+      <img [src]="imageSource" [appResizable]="resizeImage" />
+      <p [style.text-align]="'center'">
+        <i>Click to enable/disable scrollbars</i>
+      </p>
+    </ng-template>
+    <ng-template #previewError let-message>
+      <article class="preview-error">
+        <h3>Error</h3>
+        <p>{{ message }}</p>
+      </article>
+    </ng-template>
   `,
   styleUrls: ['./image-selector-viewer.component.scss']
 })
@@ -92,13 +141,22 @@ export class ImageSelectorViewerComponent
   columns = 3
   @Output()
   remove = new EventEmitter<number>()
+  @ViewChild('preview')
+  preview: TemplateRef<ElementRef>
+  @ViewChild('previewError')
+  previewError: TemplateRef<ElementRef>
 
   imageWidth: string
   selectedPresets: number[] = []
 
   private defaultPresetSub: Subscription
 
-  constructor(public imagePreset: ImagePresetService, private el: ElementRef) {}
+  constructor(
+    public imagePreset: ImagePresetService,
+    private imageSvc: ImageService,
+    private overlay: OverlayService,
+    private el: ElementRef
+  ) {}
   ngOnInit() {
     this.initializeSelectedPresets()
   }
@@ -114,8 +172,26 @@ export class ImageSelectorViewerComponent
     return item
   }
 
-  previewImage(image: string, cropPresetId: number) {
-    // TODO
+  showPreviewImage(imageSource: string, cropPresetId: number) {
+    const generatePreview = mergeMap((presets: CropPreset[]) => {
+      const preset = presets.find(({ id }) => id === cropPresetId)
+      if (preset) {
+        const { width: w, height: h, 'x-offset': x, 'y-offset': y } = preset
+        if (w < 1 || h < 1) {
+          throw new Error('Preset height and width must be greater than 1.')
+        }
+        return this.imageSvc.crop(imageSource, w, h, x, y)
+      }
+      throw new Error('Preset not found')
+    })
+    const showPreview = (image: string) =>
+      this.overlay.show(this.preview, { image, resize: true })
+    const showError = (err: Error) =>
+      this.overlay.show(this.previewError, { $implicit: err.message })
+
+    this.imagePreset.presets
+      .pipe(take(1), generatePreview)
+      .subscribe(showPreview, showError)
   }
 
   get gridColumnStyle() {
@@ -123,7 +199,7 @@ export class ImageSelectorViewerComponent
   }
 
   private initializeSelectedPresets() {
-    const defaultPreset$ = this.imagePreset.presets$.pipe(
+    const defaultPreset$ = this.imagePreset.presets.pipe(
       mergeAll(),
       filter(({ default: isDefault }) => isDefault),
       distinctUntilChanged()

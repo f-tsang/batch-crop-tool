@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core'
 @Component({
   selector: 'app-image-processor',
   template: `
-    <header>4 - Download</header>
+    <header>4 - Finish</header>
     <button color="primary" mat-flat-button>Download images (.zip)</button>
   `,
   styles: []

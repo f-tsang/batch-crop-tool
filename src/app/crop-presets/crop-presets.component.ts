@@ -49,9 +49,7 @@ export const cropDimensions = ['width', 'height', 'x-offset', 'y-offset']
             <input
               type="number"
               [value]="preset[cropDim] || ''"
-              (change)="
-                imagePreset.updatePreset(cropDim, $event.target.value, i)
-              "
+              (change)="updateCropDimension(cropDim, $event.target.value, i)"
               matInput
             />
           </mat-form-field>
@@ -135,5 +133,9 @@ export class CropPresetsComponent {
   constructor(public imagePreset: ImagePresetService) {}
   trackById(_: number, { id }: any) {
     return id
+  }
+
+  updateCropDimension(key: string, value: string, index: number) {
+    this.imagePreset.updatePreset(key, Number(value), index)
   }
 }

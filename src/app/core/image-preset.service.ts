@@ -30,7 +30,7 @@ export class ImagePresetService {
   presets = this.presets$.asObservable()
 
   constructor() {
-    this.addPreset({ default: true })
+    this.addPreset({ default: true, name: 'Example', width: 250, height: 125 })
   }
 
   addPreset(partialPreset: Partial<CropPreset> = {}) {

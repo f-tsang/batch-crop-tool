@@ -7,7 +7,9 @@ import { Component, OnInit } from '@angular/core'
   selector: 'app-image-processor',
   template: `
     <header>4 - Finish</header>
-    <button color="primary" mat-flat-button>Download images (.zip)</button>
+    <a download="batch-crop-tool" color="primary" mat-flat-button
+      >Download images (.zip)</a
+    >
   `,
   styles: []
 })

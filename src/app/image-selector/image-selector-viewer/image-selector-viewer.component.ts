@@ -13,11 +13,13 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core'
-import { combineLatest, from, Observable, Subscription } from 'rxjs'
+import { combineLatest, from, Observable, Subscription, throwError } from 'rxjs'
 import {
+  catchError,
   count,
   distinctUntilChanged,
   filter,
+  first,
   map,
   mergeAll,
   mergeMap,
@@ -79,6 +81,7 @@ export class ResizableDirective {
     <header>3 - Options</header>
     <div class="grid" [style.grid-template-columns]="gridColumnStyle">
       <div
+        #card
         class="viewer"
         *ngFor="
           let image of images | async;
@@ -121,7 +124,9 @@ export class ResizableDirective {
     <ng-template #preview let-imageSource="image" let-resizeImage="resize">
       <img [src]="imageSource" [appResizable]="resizeImage" />
       <p [style.text-align]="'center'">
-        <i>Click to enable/disable scrollbars</i>
+        <i [style]="'padding: 2px 4px; background: rgba(255, 255, 255, 0.8);'"
+          >Click to enable/disable scrollbars</i
+        >
       </p>
     </ng-template>
     <ng-template #previewError let-message>
@@ -173,25 +178,32 @@ export class ImageSelectorViewerComponent
   }
 
   showPreviewImage(imageSource: string, cropPresetId: number) {
-    const generatePreview = mergeMap((presets: CropPreset[]) => {
-      const preset = presets.find(({ id }) => id === cropPresetId)
-      if (preset) {
-        const { width: w, height: h, 'x-offset': x, 'y-offset': y } = preset
-        if (w < 1 || h < 1) {
-          throw new Error('Preset height and width must be greater than 1.')
-        }
-        return this.imageSvc.crop(imageSource, w, h, x, y)
-      }
-      throw new Error('Preset not found')
-    })
+    const generatePreview = mergeMap((preset: CropPreset) =>
+      this.cropImage(imageSource, preset)
+    )
     const showPreview = (image: string) =>
       this.overlay.show(this.preview, { image, resize: true })
     const showError = (err: Error) =>
       this.overlay.show(this.previewError, { $implicit: err.message })
 
-    this.imagePreset.presets
-      .pipe(take(1), generatePreview)
+    this.findPreset(cropPresetId)
+      .pipe(generatePreview)
       .subscribe(showPreview, showError)
+  }
+  findPreset(presetId: number) {
+    return this.imagePreset.presets.pipe(
+      take(1),
+      mergeAll(),
+      first(({ id }) => id === presetId),
+      catchError(() => throwError(new Error('Preset not found')))
+    )
+  }
+  cropImage(image: string, preset: CropPreset) {
+    const { width: w, height: h, 'x-offset': x, 'y-offset': y } = preset
+    if (w < 1 || h < 1) {
+      throw new Error('Preset height and width must be greater than 1.')
+    }
+    return this.imageSvc.crop(image, w, h, x, y)
   }
 
   get gridColumnStyle() {

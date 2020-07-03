@@ -20,6 +20,9 @@ export class CropPreset {
   }
 }
 
+/**
+ * TODO - R/W from IDB
+ */
 @Injectable({
   providedIn: 'root'
 })

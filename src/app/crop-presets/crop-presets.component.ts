@@ -7,7 +7,6 @@ export const cropDimensions = ['width', 'height', 'x-offset', 'y-offset']
 @Component({
   selector: 'app-crop-presets',
   template: `
-    <header>1 - Presets</header>
     <div class="preset-list">
       <div
         class="preset-option"
@@ -26,12 +25,16 @@ export const cropDimensions = ['width', 'height', 'x-offset', 'y-offset']
           mat-icon-button
         >
           <ng-container
-            *ngIf="preset['default']; then defaultPreset; else altPreset"
+            *ngIf="
+              preset['default'];
+              then presetIsDefault;
+              else presetNotDefault
+            "
           ></ng-container>
-          <ng-template #defaultPreset>
+          <ng-template #presetIsDefault>
             <mat-icon>radio_button_checked</mat-icon>
           </ng-template>
-          <ng-template #altPreset>
+          <ng-template #presetNotDefault>
             <mat-icon>radio_button_unchecked</mat-icon>
           </ng-template>
         </button>
@@ -48,6 +51,7 @@ export const cropDimensions = ['width', 'height', 'x-offset', 'y-offset']
             <mat-label>{{ cropDim | titlecase }}</mat-label>
             <input
               type="number"
+              [min]="cropDim === 'height' || cropDim === 'width' ? 1 : 0"
               [value]="preset[cropDim] || ''"
               (change)="updateCropDimension(cropDim, $event.target.value, i)"
               matInput
@@ -89,16 +93,20 @@ export const cropDimensions = ['width', 'height', 'x-offset', 'y-offset']
     >
       Add preset
     </button>
-    <p>{{ imagePreset.presets | async | json }}</p>
+
+    <p [style.grid-area]="'c'">{{ imagePreset.presets | async | json }}</p>
   `,
   styles: [
     `
       :host {
         display: grid;
-        grid-auto-columns: auto;
-        max-width: 40rem;
+        grid-template:
+          'a a a' auto
+          '. b .' auto
+          'c c c' auto / 0.25fr 0.5fr 0.25fr;
       }
       .preset-list {
+        grid-area: a;
         display: flex;
         flex-flow: column nowrap;
       }
@@ -119,6 +127,7 @@ export const cropDimensions = ['width', 'height', 'x-offset', 'y-offset']
         gap: 0.25rem;
       }
       .preset-button {
+        grid-area: b;
         margin-top: 1rem;
       }
       .close-button:hover:not(:disabled) {
@@ -136,6 +145,12 @@ export class CropPresetsComponent {
   }
 
   updateCropDimension(key: string, value: string, index: number) {
-    this.imagePreset.updatePreset(key, Number(value), index)
+    let validValue = Number(value)
+    if ((key === 'height' || key === 'width') && validValue < 1) {
+      validValue = 1
+    } else if (validValue < 0) {
+      validValue = 0
+    }
+    this.imagePreset.updatePreset(key, validValue, index)
   }
 }

@@ -43,9 +43,8 @@ import { ImageService } from 'src/app/core/image.service'
 import { OverlayService } from 'src/app/core/overlay.service'
 
 /**
- * TODO
- *  - Rename as FixFormFieldDirective [fixFormField]
- *  - Move to a shared folder.
+ * TBD: ...
+ * TBD: Rename as FixFormFieldDirective [fixFormField].
  */
 @Directive({
   selector: '[appFix]'
@@ -60,7 +59,7 @@ export class FixDirective implements AfterViewInit {
   }
 }
 
-/** TBD */
+/** TBD: ... */
 @Directive({
   selector: '[appResizable]'
 })
@@ -87,7 +86,26 @@ export class ResizableDirective {
 @Component({
   selector: 'app-image-selector-viewer',
   template: `
-    <header>3 - Options</header>
+    <div
+      [style]="{
+        display: 'flex',
+        'justify-content': 'center',
+        'align-items': 'center'
+      }"
+    >
+      <mat-icon>view_column</mat-icon>
+      <span class="cdk-visually-hidden">Number of columns</span>
+      <mat-slider
+        color="primary"
+        thumbLabel="true"
+        tickInterval="1"
+        min="1"
+        max="5"
+        [style]
+        [value]="columns"
+        (valueChange)="updateColumns($event)"
+      ></mat-slider>
+    </div>
     <div class="grid" [style.grid-template-columns]="gridColumnStyle">
       <div
         #card
@@ -181,9 +199,7 @@ export class ImageSelectorViewerComponent
     this.initializeCroppedImages()
   }
   ngAfterViewInit() {
-    if (this.el?.nativeElement?.clientWidth) {
-      this.imageWidth = `${this.el.nativeElement.clientWidth / this.columns}px`
-    }
+    this.updateImageWidth()
   }
   ngOnDestroy() {
     this?.defaultPresetSub.unsubscribe()
@@ -193,6 +209,15 @@ export class ImageSelectorViewerComponent
     return item
   }
 
+  updateColumns(columns: number) {
+    this.columns = columns
+    this.updateImageWidth()
+  }
+  updateImageWidth() {
+    if (this.el?.nativeElement?.clientWidth) {
+      this.imageWidth = `${this.el.nativeElement.clientWidth / this.columns}px`
+    }
+  }
   updateSelectedPresets(value: number, index: number) {
     this.selectedPresets
       .pipe(
@@ -235,7 +260,7 @@ export class ImageSelectorViewerComponent
   }
 
   get gridColumnStyle() {
-    return `repeat(${this.columns}, max-content)`
+    return `repeat(${this.columns}, 1fr)`
   }
 
   private initializeSelectedPresets() {

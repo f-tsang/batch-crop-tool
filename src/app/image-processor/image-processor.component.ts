@@ -4,9 +4,9 @@ import * as JSZip from 'jszip'
 import { Observable } from 'rxjs'
 import { mergeAll, mergeMap, reduce, take } from 'rxjs/operators'
 
-/**
- * TODO - ...
- */
+const defaultFilename = 'batch-crop-tool'
+const defaultExtension = '.zip'
+
 @Component({
   selector: 'app-image-processor',
   template: `
@@ -22,8 +22,8 @@ import { mergeAll, mergeMap, reduce, take } from 'rxjs/operators'
     `
       :host {
         display: grid;
-        grid-auto-flow: row;
-        justify-content: left;
+        grid-auto-columns: minmax(max-content, 0.5fr);
+        justify-content: center;
       }
       header {
         margin-bottom: 1rem;
@@ -34,11 +34,13 @@ import { mergeAll, mergeMap, reduce, take } from 'rxjs/operators'
 export class ImageProcessorComponent {
   @Input()
   images: Observable<string[]>
-  filename = this.defaultFilename
-  extension = '.zip'
+  @Input()
+  filename = defaultFilename
+  @Input()
+  extension = defaultExtension
 
   downloadZippedImages() {
-    const filename = this.filename === '' ? this.defaultFilename : this.filename
+    const filename = this.filename === '' ? defaultFilename : this.filename
     const addImageToZip = (zipFile: JSZip, image: string, index: number) => {
       const base64Image = image.split(',')[1]
       zipFile.file(`${index}.png`, base64Image, { base64: true })
@@ -51,10 +53,6 @@ export class ImageProcessorComponent {
         reduce(addImageToZip, new JSZip()),
         mergeMap(zipFile => zipFile.generateAsync({ type: 'blob' }))
       )
-      .subscribe(zipFile => saveAs(zipFile, `${filename}${this.extension}`))
-  }
-
-  get defaultFilename() {
-    return 'batch-crop-tool'
+      .subscribe(blob => saveAs(blob, `${filename}${this.extension}`))
   }
 }

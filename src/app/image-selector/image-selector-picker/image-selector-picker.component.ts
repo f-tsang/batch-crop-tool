@@ -35,7 +35,7 @@ import {
       multiple
       [style.display]="'none'"
     />
-    <button color="primary" (click)="input.click()" mat-stroked-button>
+    <button color="primary" (click)="input.click()" mat-flat-button>
       Add images
     </button>
   `,

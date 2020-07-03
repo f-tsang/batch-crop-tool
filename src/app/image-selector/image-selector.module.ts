@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core'
 import { MatButtonModule } from '@angular/material/button'
 import { MatIconModule } from '@angular/material/icon'
 import { MatSelectModule } from '@angular/material/select'
+import { MatSliderModule } from '@angular/material/slider'
 
 import {
   ImageSelectorPickerComponent
@@ -12,21 +13,21 @@ import {
   ImageSelectorViewerComponent,
   ResizableDirective
 } from './image-selector-viewer/image-selector-viewer.component'
-import { ImageSelectorComponent } from './image-selector.component'
 
 @NgModule({
   declarations: [
-    ImageSelectorComponent,
     ImageSelectorViewerComponent,
     ImageSelectorPickerComponent,
     FixDirective,
     ResizableDirective
   ],
-  exports: [
-    ImageSelectorComponent,
-    ImageSelectorViewerComponent,
-    ImageSelectorPickerComponent
-  ],
-  imports: [CommonModule, MatIconModule, MatButtonModule, MatSelectModule]
+  exports: [ImageSelectorViewerComponent, ImageSelectorPickerComponent],
+  imports: [
+    CommonModule,
+    MatIconModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatSliderModule
+  ]
 })
 export class ImageSelectorModule {}

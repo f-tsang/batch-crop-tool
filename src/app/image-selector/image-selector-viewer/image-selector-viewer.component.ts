@@ -148,9 +148,6 @@ export class ResizableDirective {
         </div>
       </div>
     </div>
-
-    <p>{{ selectedPresets | async | json }}</p>
-
     <ng-template #preview let-imageSource="image" let-resizeImage="resize">
       <img [src]="imageSource" [appResizable]="resizeImage" />
       <p [style.text-align]="'center'">

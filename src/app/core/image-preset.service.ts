@@ -2,9 +2,6 @@ import { Injectable } from '@angular/core'
 import { BehaviorSubject, pipe } from 'rxjs'
 import { filter, map, mergeAll, take, toArray } from 'rxjs/operators'
 
-/**
- * TBD: Input type number value is a string.
- */
 export class CropPreset {
   id: number
   default = false

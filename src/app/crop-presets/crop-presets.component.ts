@@ -1,6 +1,6 @@
 import { Component } from '@angular/core'
 
-import { ImagePresetService } from '../core/image-preset.service'
+import { CropPreset, ImagePresetService } from '../core/image-preset.service'
 
 export const cropDimensions = ['width', 'height', 'x-offset', 'y-offset']
 
@@ -93,8 +93,6 @@ export const cropDimensions = ['width', 'height', 'x-offset', 'y-offset']
     >
       Add preset
     </button>
-
-    <p [style.grid-area]="'c'">{{ imagePreset.presets | async | json }}</p>
   `,
   styles: [
     `
@@ -102,8 +100,7 @@ export const cropDimensions = ['width', 'height', 'x-offset', 'y-offset']
         display: grid;
         grid-template:
           'a a a' auto
-          '. b .' auto
-          'c c c' auto / 0.25fr 0.5fr 0.25fr;
+          '. b .' auto / 0.25fr 0.5fr 0.25fr;
       }
       .preset-list {
         grid-area: a;
@@ -112,7 +109,7 @@ export const cropDimensions = ['width', 'height', 'x-offset', 'y-offset']
       }
       .preset-option {
         display: grid;
-        grid: auto / min-content minmax(100px, 1fr) minmax(250px, 2fr) min-content;
+        grid: auto / min-content minmax(6.25rem, 1fr) minmax(15.5rem, 2fr) min-content;
         align-items: center;
         gap: 1rem;
       }
@@ -140,7 +137,7 @@ export class CropPresetsComponent {
   cropDimensions = cropDimensions
 
   constructor(public imagePreset: ImagePresetService) {}
-  trackById(_: number, { id }: any) {
+  trackById(_: number, { id }: CropPreset) {
     return id
   }
 

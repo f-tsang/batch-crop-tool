@@ -12,6 +12,7 @@ import {
   selector: 'app-root',
   template: `
     <header class="title">Batch Crop Tool</header>
+    <!-- TODO - Refactor into crop-tool-stepper component -->
     <div class="container">
       <mat-horizontal-stepper linear="true" labelPosition="bottom">
         <mat-step>

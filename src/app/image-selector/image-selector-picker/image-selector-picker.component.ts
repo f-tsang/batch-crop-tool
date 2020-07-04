@@ -15,6 +15,7 @@ import {
   pluck,
   switchMap,
   take,
+  tap,
   toArray,
   withLatestFrom
 } from 'rxjs/operators'
@@ -54,10 +55,10 @@ import {
   ]
 })
 export class ImageSelectorPickerComponent implements AfterViewInit, OnDestroy {
-  @ViewChild('input')
-  input: ElementRef<HTMLInputElement>
   @Output()
   images = new BehaviorSubject<string[]>([])
+  @ViewChild('input')
+  input: ElementRef<HTMLInputElement>
 
   private inputSub: Subscription
 
@@ -66,7 +67,8 @@ export class ImageSelectorPickerComponent implements AfterViewInit, OnDestroy {
       this.inputSub = fileInputToObservable(this.input.nativeElement)
         .pipe(
           withLatestFrom(this.images),
-          map(([newImages, oldImages]) => [...oldImages, ...newImages])
+          map(([newImages, oldImages]) => [...oldImages, ...newImages]),
+          tap(() => setTimeout(() => (this.input.nativeElement.value = '')))
         )
         .subscribe(this.images)
     }
@@ -92,7 +94,7 @@ export class ImageSelectorPickerComponent implements AfterViewInit, OnDestroy {
 
 export function fileInputToObservable(input: HTMLInputElement) {
   const fileListToDataUrls = (fileList: FileList) => {
-    const fileToDataUrl = mergeMap((file: Blob) => {
+    const fileToDataUrl = mergeMap((file: File) => {
       const reader = new FileReader()
       const readerDataUrl = fromEvent(reader, 'load').pipe(
         take(1),

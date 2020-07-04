@@ -1,18 +1,22 @@
-import { Component, Input } from '@angular/core'
+import { Component, EventEmitter, Input, Output } from '@angular/core'
 import { saveAs } from 'file-saver'
 import * as JSZip from 'jszip'
 import { Observable } from 'rxjs'
 import { mergeAll, mergeMap, reduce, take } from 'rxjs/operators'
 
-const defaultFilename = 'batch-crop-tool'
-const defaultExtension = '.zip'
+export const defaultFilename = 'batch-crop-tool'
+export const defaultExtension = '.zip'
 
 @Component({
   selector: 'app-image-processor',
   template: `
     <mat-form-field>
       <mat-label>Filename</mat-label>
-      <input [(value)]="filename" matInput />
+      <input
+        [value]="filename"
+        (input)="this.valueChange.emit($event.target.value)"
+        matInput
+      />
     </mat-form-field>
     <button color="primary" (click)="downloadZippedImages()" mat-flat-button>
       Download images (.zip)
@@ -38,6 +42,8 @@ export class ImageProcessorComponent {
   filename = defaultFilename
   @Input()
   extension = defaultExtension
+  @Output()
+  valueChange = new EventEmitter()
 
   downloadZippedImages() {
     const filename = this.filename === '' ? defaultFilename : this.filename
@@ -54,5 +60,10 @@ export class ImageProcessorComponent {
         mergeMap(zipFile => zipFile.generateAsync({ type: 'blob' }))
       )
       .subscribe(blob => saveAs(blob, `${filename}${this.extension}`))
+  }
+
+  @Input()
+  set value(filename: string) {
+    this.filename = filename
   }
 }

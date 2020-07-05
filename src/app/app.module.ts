@@ -1,17 +1,14 @@
 import { NgModule } from '@angular/core'
-import { FormsModule, ReactiveFormsModule } from '@angular/forms'
-import { MatButtonModule } from '@angular/material/button'
-import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatIconModule } from '@angular/material/icon'
-import { MatInputModule } from '@angular/material/input'
-import { MatStepperModule } from '@angular/material/stepper'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { ServiceWorkerModule } from '@angular/service-worker'
 
+import { environment } from '../environments/environment'
 import { AppComponent } from './app.component'
-import { CropPresetsModule } from './crop-presets/crop-presets.module'
-import { ImageProcessorModule } from './image-processor/image-processor.module'
-import { ImageSelectorModule } from './image-selector/image-selector.module'
+import {
+  CropToolStepperModule
+} from './crop-tool-stepper/crop-tool-stepper.module'
 import { OverlayComponent } from './overlay/overlay.component'
 
 @NgModule({
@@ -19,16 +16,11 @@ import { OverlayComponent } from './overlay/overlay.component'
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    FormsModule,
-    ReactiveFormsModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production
+    }),
     MatIconModule,
-    MatButtonModule,
-    MatInputModule,
-    MatStepperModule,
-    MatFormFieldModule,
-    CropPresetsModule,
-    ImageSelectorModule,
-    ImageProcessorModule
+    CropToolStepperModule
   ],
   providers: [],
   bootstrap: [AppComponent]

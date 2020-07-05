@@ -8,7 +8,8 @@ import {
   Observable,
   of,
   pipe,
-  Subscription
+  Subscription,
+  throwError
 } from 'rxjs'
 import {
   catchError,
@@ -31,7 +32,7 @@ import { IdbService } from './idb.service'
 
 export const initialPreset = {
   default: true,
-  name: 'Example',
+  name: 'Default',
   width: 250,
   height: 175
 }
@@ -62,22 +63,29 @@ export class ImagePresetService implements OnDestroy {
   private presetOrderSub: Subscription
 
   constructor(private idb: IdbService) {
+    const dbUpdatePresetOrder = () => {
+      this.presetOrderSub = this.presets$
+        .pipe(
+          switchMap(presets => from(presets).pipe(pluck('id'), toArray())),
+          mergeMap(value => this.idb.db.metadata.put({ key: 'order', value }))
+        )
+        .subscribe()
+    }
+    const initialPresetOrder = from(
+      this.idb.db.metadata.add({ key: 'order', value: [0] })
+    ).pipe(
+      catchError(err =>
+        err?.name === 'ConstraintError'
+          ? of(null)
+          : throwError(new Error('IDB initialization failed.'))
+      )
+    )
     this.presets = this.presets$.asObservable()
     this.addPreset(initialPreset, false)
-    from(this.idb.db.metadata.add({ key: 'order', value: [0] }))
+    initialPresetOrder
       .pipe(
-        catchError(() => of(0)),
         mergeMap(() => this.initPresetDb()),
-        tap(() => {
-          this.presetOrderSub = this.presets$
-            .pipe(
-              switchMap(presets => from(presets).pipe(pluck('id'), toArray())),
-              mergeMap(value =>
-                this.idb.db.metadata.put({ key: 'order', value })
-              )
-            )
-            .subscribe()
-        })
+        tap(dbUpdatePresetOrder)
       )
       .subscribe()
   }

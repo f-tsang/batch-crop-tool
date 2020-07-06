@@ -42,8 +42,9 @@ import {
 import { ImageService } from 'src/app/core/image.service'
 import { OverlayService } from 'src/app/core/overlay.service'
 
+// TBD: Move directives into a separate file.
+
 /**
- * TBD: ...
  * TBD: Rename as FixFormFieldDirective [fixFormField].
  */
 @Directive({
@@ -58,8 +59,6 @@ export class FixDirective implements AfterViewInit {
     }
   }
 }
-
-/** TBD: ... */
 @Directive({
   selector: '[appResizable]'
 })

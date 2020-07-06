@@ -15,4 +15,4 @@ Best for cropping many images with only a select few needing different options.
 
 ## Future Considerations
 
-Originally a proof-of-concept, this got feature creep'ed to where it is now. Further development for ease-of-use features, such as drag-and-drop and multi-select, to be determined.
+Originally a proof-of-concept, this got feature creeped to where it is now. Further development for ease-of-use features, such as drag-and-drop and multi-select, to be determined.

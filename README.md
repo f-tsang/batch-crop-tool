@@ -1,27 +1,18 @@
-# BatchCropTool
+# Batch Crop Tool
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.7.
+An HTML5 Canvas-based tool for cropping multiple images at once. Images can be individually adjusted to use a different crop preset. Presets are stored locally in the browser.
 
-## Development server
+Best for cropping many images with only a select few needing different options.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## Preset Options
 
-## Code scaffolding
+- Set as default
+- Name
+- Width
+- Height
+- X-offset
+- Y-offset
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Future Considerations
 
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+Originally a proof-of-concept, this got feature creep'ed to where it is now. Further development for ease-of-use features, such as drag-and-drop and multi-select, to be determined.

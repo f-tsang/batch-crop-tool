@@ -8,7 +8,7 @@ import { OverlayService } from '../core/overlay.service'
     <div
       #overlayContainer
       class="overlay-container"
-      *ngIf="visible | async"
+      *ngIf="overlay.visible | async"
       (click)="closeOnClick($event.target)"
     >
       <div [style.position]="'relative'">
@@ -61,8 +61,6 @@ import { OverlayService } from '../core/overlay.service'
 export class OverlayComponent {
   @ViewChild('overlayContainer')
   container: ElementRef
-
-  visible = this.overlay.visible // TBD: Why does using a variable work?
 
   constructor(public overlay: OverlayService) {}
 

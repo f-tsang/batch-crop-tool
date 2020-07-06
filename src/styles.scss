@@ -8,3 +8,11 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
+.mat-stepper-horizontal,
+.mat-stepper-vertical {
+  background: none;
+}
+.mat-horizontal-content-container {
+  padding-top: 16px !important; // Override mat-stepper styles
+}

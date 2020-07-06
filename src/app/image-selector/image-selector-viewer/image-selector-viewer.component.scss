@@ -1,0 +1,49 @@
+:host {
+  display: grid;
+  grid-auto-flow: row;
+  gap: 0.5rem;
+}
+.grid {
+  display: grid;
+  gap: 0.25rem;
+}
+.remove-button {
+  all: unset;
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: grid;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  height: 2.5rem;
+  width: 2.5rem;
+  text-shadow: 0px 0px 0.125rem white, 0px 0px 0.25rem white;
+
+  :hover {
+    color: red;
+  }
+}
+.viewer {
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 0.5rem;
+}
+.controls {
+  padding-right: 8px;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+}
+.image-container {
+  max-height: 100px;
+  overflow: hidden;
+}
+.preview-error {
+  padding: 0.25rem 1rem;
+  border-radius: 0.25rem;
+  background: white;
+}

@@ -12,6 +12,7 @@ import { Component } from '@angular/core'
     `
       :host {
         display: grid;
+        /* TBD: Allow this to be edited in-app */
         grid-auto-columns: minmax(40rem, 50rem);
         grid-auto-rows: max-content;
         justify-content: center;

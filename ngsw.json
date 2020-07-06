@@ -1,0 +1,68 @@
+{
+  "configVersion": 1,
+  "timestamp": 1594044570980,
+  "index": "/batch-crop-tool/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "urls": [
+        "/batch-crop-tool/favicon.png",
+        "/batch-crop-tool/index.html",
+        "/batch-crop-tool/main-es2015.82121c85e50a20906396.js",
+        "/batch-crop-tool/main-es5.82121c85e50a20906396.js",
+        "/batch-crop-tool/manifest.webmanifest",
+        "/batch-crop-tool/polyfills-es2015.f332a089ad1600448873.js",
+        "/batch-crop-tool/polyfills-es5.177e85a9724683782539.js",
+        "/batch-crop-tool/runtime-es2015.0dae8cbc97194c7caed4.js",
+        "/batch-crop-tool/runtime-es5.0dae8cbc97194c7caed4.js",
+        "/batch-crop-tool/styles.996b71fd245270ef89c1.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "urls": [
+        "/batch-crop-tool/assets/icons/icon-192x192.png",
+        "/batch-crop-tool/assets/icons/icon-512x512.png"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [],
+  "hashTable": {
+    "/batch-crop-tool/assets/icons/icon-192x192.png": "386ff46507aa13c32ee99322a47462ee837fb7a9",
+    "/batch-crop-tool/assets/icons/icon-512x512.png": "8ff304c65fe034ff6d2de67733c904035c49de4d",
+    "/batch-crop-tool/favicon.png": "bf377ceb866b3bc0049226b335287377811b484b",
+    "/batch-crop-tool/index.html": "14b9ca6d2c778627d099326c5642932f077f87f2",
+    "/batch-crop-tool/main-es2015.82121c85e50a20906396.js": "d6169b4d5cb01901fd8f33760f38fa2301cb3d2a",
+    "/batch-crop-tool/main-es5.82121c85e50a20906396.js": "eaa67d41824bdc12d9f3cfb4bb19b9adc7eb3eb8",
+    "/batch-crop-tool/manifest.webmanifest": "ab8f74f615a0b24f40f2d5265325f67c6c7cd110",
+    "/batch-crop-tool/polyfills-es2015.f332a089ad1600448873.js": "72ad4ccc0a3916ae4598199447cdeadd6d380570",
+    "/batch-crop-tool/polyfills-es5.177e85a9724683782539.js": "8aa26ea87b9958c6bd13b7c257c0e9940438e684",
+    "/batch-crop-tool/runtime-es2015.0dae8cbc97194c7caed4.js": "a9aafcf49f49145093fc831efd9b8e2f6c71bb9c",
+    "/batch-crop-tool/runtime-es5.0dae8cbc97194c7caed4.js": "a9aafcf49f49145093fc831efd9b8e2f6c71bb9c",
+    "/batch-crop-tool/styles.996b71fd245270ef89c1.css": "15c3f9ab904f8a24a974b5f8777694aa4c78f80e"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ]
+}

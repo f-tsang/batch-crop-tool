@@ -1,23 +1,26 @@
 {
   "configVersion": 1,
-  "timestamp": 1594044570980,
+  "timestamp": 1603696363546,
   "index": "/batch-crop-tool/index.html",
   "assetGroups": [
     {
       "name": "app",
       "installMode": "prefetch",
       "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
       "urls": [
         "/batch-crop-tool/favicon.png",
         "/batch-crop-tool/index.html",
-        "/batch-crop-tool/main-es2015.82121c85e50a20906396.js",
-        "/batch-crop-tool/main-es5.82121c85e50a20906396.js",
+        "/batch-crop-tool/main-es2015.a783cc5260a9000db0f5.js",
+        "/batch-crop-tool/main-es5.a783cc5260a9000db0f5.js",
         "/batch-crop-tool/manifest.webmanifest",
-        "/batch-crop-tool/polyfills-es2015.f332a089ad1600448873.js",
-        "/batch-crop-tool/polyfills-es5.177e85a9724683782539.js",
-        "/batch-crop-tool/runtime-es2015.0dae8cbc97194c7caed4.js",
-        "/batch-crop-tool/runtime-es5.0dae8cbc97194c7caed4.js",
-        "/batch-crop-tool/styles.996b71fd245270ef89c1.css"
+        "/batch-crop-tool/polyfills-es2015.5653012dc8a6f92672ea.js",
+        "/batch-crop-tool/polyfills-es5.364cba5eb84813a271fe.js",
+        "/batch-crop-tool/runtime-es2015.79afa47f5599da493cef.js",
+        "/batch-crop-tool/runtime-es5.79afa47f5599da493cef.js",
+        "/batch-crop-tool/styles.5f6458af8e02e3d43811.css"
       ],
       "patterns": []
     },
@@ -25,6 +28,9 @@
       "name": "assets",
       "installMode": "lazy",
       "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
       "urls": [
         "/batch-crop-tool/assets/icons/icon-192x192.png",
         "/batch-crop-tool/assets/icons/icon-512x512.png"
@@ -37,15 +43,15 @@
     "/batch-crop-tool/assets/icons/icon-192x192.png": "386ff46507aa13c32ee99322a47462ee837fb7a9",
     "/batch-crop-tool/assets/icons/icon-512x512.png": "8ff304c65fe034ff6d2de67733c904035c49de4d",
     "/batch-crop-tool/favicon.png": "bf377ceb866b3bc0049226b335287377811b484b",
-    "/batch-crop-tool/index.html": "14b9ca6d2c778627d099326c5642932f077f87f2",
-    "/batch-crop-tool/main-es2015.82121c85e50a20906396.js": "d6169b4d5cb01901fd8f33760f38fa2301cb3d2a",
-    "/batch-crop-tool/main-es5.82121c85e50a20906396.js": "eaa67d41824bdc12d9f3cfb4bb19b9adc7eb3eb8",
+    "/batch-crop-tool/index.html": "3db7448199d31d6485512e487bb2fe72ba0a12f3",
+    "/batch-crop-tool/main-es2015.a783cc5260a9000db0f5.js": "a14dae16288aa7f642fb5f328bb757c149b683c4",
+    "/batch-crop-tool/main-es5.a783cc5260a9000db0f5.js": "477ff9d1042c883e49ab742b0c32a1041e72f940",
     "/batch-crop-tool/manifest.webmanifest": "ab8f74f615a0b24f40f2d5265325f67c6c7cd110",
-    "/batch-crop-tool/polyfills-es2015.f332a089ad1600448873.js": "72ad4ccc0a3916ae4598199447cdeadd6d380570",
-    "/batch-crop-tool/polyfills-es5.177e85a9724683782539.js": "8aa26ea87b9958c6bd13b7c257c0e9940438e684",
-    "/batch-crop-tool/runtime-es2015.0dae8cbc97194c7caed4.js": "a9aafcf49f49145093fc831efd9b8e2f6c71bb9c",
-    "/batch-crop-tool/runtime-es5.0dae8cbc97194c7caed4.js": "a9aafcf49f49145093fc831efd9b8e2f6c71bb9c",
-    "/batch-crop-tool/styles.996b71fd245270ef89c1.css": "15c3f9ab904f8a24a974b5f8777694aa4c78f80e"
+    "/batch-crop-tool/polyfills-es2015.5653012dc8a6f92672ea.js": "cad3129c71535baaab25ac06d8429734959b0b3f",
+    "/batch-crop-tool/polyfills-es5.364cba5eb84813a271fe.js": "3aea9cf1763b61d6a2768a628573e67ec3e7fd47",
+    "/batch-crop-tool/runtime-es2015.79afa47f5599da493cef.js": "a9aafcf49f49145093fc831efd9b8e2f6c71bb9c",
+    "/batch-crop-tool/runtime-es5.79afa47f5599da493cef.js": "a9aafcf49f49145093fc831efd9b8e2f6c71bb9c",
+    "/batch-crop-tool/styles.5f6458af8e02e3d43811.css": "48306a75117fc130141460b0842ff5b3acd44bcd"
   },
   "navigationUrls": [
     {

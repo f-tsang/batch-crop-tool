@@ -19,6 +19,7 @@ import {
           <button mat-button matStepperNext>Next</button>
         </div>
       </mat-step>
+
       <mat-step [stepControl]="pickerFormGroup">
         <form [formGroup]="pickerFormGroup">
           <ng-template matStepLabel>Add Images</ng-template>
@@ -38,6 +39,7 @@ import {
           </div>
         </form>
       </mat-step>
+
       <mat-step>
         <ng-template matStepLabel>Crop Images</ng-template>
         <app-image-selector-viewer
@@ -50,6 +52,7 @@ import {
           <button mat-button matStepperNext>Next</button>
         </div>
       </mat-step>
+
       <mat-step>
         <ng-template matStepLabel>Finish</ng-template>
         <app-image-processor

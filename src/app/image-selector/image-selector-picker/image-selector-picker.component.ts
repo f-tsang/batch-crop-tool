@@ -8,10 +8,10 @@ import {
 } from '@angular/core'
 import { BehaviorSubject, from, fromEvent, pipe, Subscription } from 'rxjs'
 import {
+  concatMap,
   filter,
   map,
   mergeAll,
-  mergeMap,
   pluck,
   switchMap,
   take,
@@ -94,7 +94,7 @@ export class ImageSelectorPickerComponent implements AfterViewInit, OnDestroy {
 
 export function fileInputToObservable(input: HTMLInputElement) {
   const fileListToDataUrls = (fileList: FileList) => {
-    const fileToDataUrl = mergeMap((file: File) => {
+    const fileToDataUrl = concatMap((file: File) => {
       const reader = new FileReader()
       const readerDataUrl = fromEvent(reader, 'load').pipe(
         take(1),

@@ -24,7 +24,7 @@
     "@angular/service-worker": "~10.2.0",
     "dexie": "^3.0.1",
     "file-saver": "^2.0.2",
-    "jszip": "^3.5.0",
+    "jszip": "^3.7.0",
     "rxjs": "~6.5.4",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"
